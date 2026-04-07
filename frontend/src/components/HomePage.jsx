@@ -5,7 +5,7 @@ import axios from "axios";
 function HomePage() {
   const [products, setProducts] = useState([]);
 
-  // ✅ Fetch products from backend
+  //  Fetch products from backend
   useEffect(() => {
     const fetchProducts = async () => {
       try {
