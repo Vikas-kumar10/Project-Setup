@@ -8,6 +8,7 @@ dotenv.config();
 
 
 import adminRoutes from "./routes/adminRoutes.js";
+import productRoutes from "./routes/productRoutes.js"
 
 // middleware
 app.use(cors());
@@ -20,6 +21,7 @@ app.get("/", (req, res) => {
 
 // routes are created
 app.use("/api/admin", adminRoutes);
+app.use("/api/products", productRoutes);
 
 // DB connection
 mongoose.connect(process.env.MONGO_URI)
