@@ -2,8 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-
-
 function AddProduct() {
   const navigate = useNavigate();
 
@@ -14,6 +12,8 @@ function AddProduct() {
     description: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   // handle input change
   const handleChange = (e) => {
     setProduct({
@@ -22,29 +22,52 @@ function AddProduct() {
     });
   };
 
-  // handle submit
+  // handle submit (API)
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  await axios.post("http://localhost:5000/api/products", product);
+    try {
+      setLoading(true);
 
-  alert("Product Added");
-  navigate("/admin/products");
-};
+      //  API call ho raha hai
+      await axios.post("http://localhost:5000/api/products", {
+        ...product,
+        price: Number(product.price), 
+      });
+
+      alert("Product Added Successfully ");
+
+      // reset form
+      setProduct({
+        name: "",
+        price: "",
+        image: "",
+        description: "",
+      });
+
+      // redirect
+      navigate("/admin/products");
+    } catch (error) {
+      console.error("Error adding product:", error);
+      alert("Failed to add product ");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center p-6">
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-lg">
         
-        {/* Title */}
+        
         <h1 className="text-2xl font-bold mb-6 text-center">
           Add Product
         </h1>
 
-        {/* Form */}
+        
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           
-          {/* Name */}
+          
           <input
             type="text"
             name="name"
@@ -55,7 +78,7 @@ function AddProduct() {
             required
           />
 
-          {/* Price */}
+          
           <input
             type="number"
             name="price"
@@ -66,7 +89,7 @@ function AddProduct() {
             required
           />
 
-          {/* Image URL */}
+          
           <input
             type="text"
             name="image"
@@ -77,7 +100,16 @@ function AddProduct() {
             required
           />
 
-          {/* Description */}
+          
+          {product.image && (
+            <img
+              src={product.image}
+              alt="preview"
+              className="h-40 object-cover rounded-lg"
+            />
+          )}
+
+          
           <textarea
             name="description"
             placeholder="Description"
@@ -88,12 +120,13 @@ function AddProduct() {
             required
           />
 
-          {/* Button */}
+          
           <button
             type="submit"
+            disabled={loading}
             className="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition"
           >
-            Add Product
+            {loading ? "Adding..." : "Add Product"}
           </button>
         </form>
       </div>

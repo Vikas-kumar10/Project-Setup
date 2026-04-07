@@ -22,15 +22,15 @@ function AdminLogin() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-xl shadow-lg w-96">
         
-        {/* Title */}
+        
         <h1 className="text-2xl font-bold text-center mb-6">
           Admin Login
         </h1>
 
-        {/* Form */}
+        
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
           
-          {/* Username */}
+          
           <input
             type="text"
             placeholder="Username"
@@ -40,7 +40,7 @@ function AdminLogin() {
             required
           />
 
-          {/* Password */}
+          
           <input
             type="password"
             placeholder="Password"
@@ -50,7 +50,7 @@ function AdminLogin() {
             
           />
 
-          {/* Button */}
+          
           <button
             type="submit"
             className="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition"
@@ -59,7 +59,7 @@ function AdminLogin() {
           </button>
         </form>
 
-        {/* Hint */}
+        {/* Use for Admin */}
         <p className="text-sm text-gray-500 mt-4 text-center">
           Use by: <span className="font-bold">admin</span>
         </p>

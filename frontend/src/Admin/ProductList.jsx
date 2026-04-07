@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import api from "../Api/Api";
 
 function ProductList() {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
-  // ✅ Fetch products from backend
+  //  Fetch products from backend
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -21,20 +20,10 @@ function ProductList() {
     fetchProducts();
   }, []);
 
-  // ✅ Delete product (API)
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`);
-      setProducts(products.filter((p) => p._id !== id));
-    } catch (error) {
-      console.error("Error deleting product:", error);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       
-      {/* Header */}
+      
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Product List</h1>
 
@@ -55,7 +44,7 @@ function ProductList() {
               <th className="p-3">Image</th>
               <th className="p-3">Name</th>
               <th className="p-3">Price</th>
-              <th className="p-3">Actions</th>
+              <th className="p-3">View</th>
             </tr>
           </thead>
 
@@ -70,7 +59,7 @@ function ProductList() {
               products.map((p) => (
                 <tr key={p._id} className="border-t">
                   
-                  {/* Image */}
+                  
                   <td className="p-3">
                     <img
                       src={p.image}
@@ -79,32 +68,22 @@ function ProductList() {
                     />
                   </td>
 
-                  {/* Name */}
+                  
                   <td className="p-3 font-semibold">{p.name}</td>
 
-                  {/* Price */}
+                  
                   <td className="p-3 text-green-600">₹{p.price}</td>
 
-                  {/* Actions */}
-                  <td className="p-3 flex gap-2">
-                    
-                    {/* Edit */}
+                  
+                  <td className="p-3">
                     <button
-                      onClick={() => navigate(`/admin/edit/${p._id}`)}
-                      className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded"
+                      onClick={() => navigate(`/product/${p._id}`)}
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded"
                     >
-                      Edit
+                      View
                     </button>
-
-                    {/* Delete */}
-                    <button
-                      onClick={() => handleDelete(p._id)}
-                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-                    >
-                      Delete
-                    </button>
-
                   </td>
+
                 </tr>
               ))
             )}

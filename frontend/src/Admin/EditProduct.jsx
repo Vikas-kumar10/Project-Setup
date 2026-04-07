@@ -13,25 +13,30 @@ function EditProduct() {
     description: "",
   });
 
-  // ✅ Fetch single product from backend
+  const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
+
+  // Fetch SINGLE product
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/products");
-        const foundProduct = res.data.find((p) => p._id === id);
-
-        if (foundProduct) {
-          setProduct(foundProduct);
-        }
+        const res = await axios.get(
+          `http://localhost:5000/api/products/${id}`
+        );
+        setProduct(res.data);
       } catch (error) {
         console.error("Error fetching product:", error);
+        alert("Product not found ");
+        // navigate("/admin/products");
+      } finally {
+        setFetching(false);
       }
     };
 
     fetchProduct();
-  }, [id]);
+  }, [id, navigate]);
 
-  // ✅ Handle input change
+  // Handle input change
   const handleChange = (e) => {
     setProduct({
       ...product,
@@ -39,24 +44,32 @@ function EditProduct() {
     });
   };
 
-  // ✅ Update Product (API)
+  // UPDATE Product
   const handleUpdate = async (e) => {
     e.preventDefault();
 
     try {
+      setLoading(true);
+
       await axios.put(
         `http://localhost:5000/api/products/${id}`,
-        product
+        {
+          ...product,
+          price: Number(product.price),
+        }
       );
 
-      alert("Product Updated Successfully");
+      alert("Product Updated Successfully ");
       navigate("/admin/products");
     } catch (error) {
       console.error("Error updating product:", error);
+      alert("Update Failed ");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // ✅ Delete Product (API)
+  //  DELETE Product
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this product?"
@@ -65,20 +78,36 @@ function EditProduct() {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`);
+      setLoading(true);
 
-      alert("Product Deleted Successfully");
+      await axios.delete(
+        `http://localhost:5000/api/products/${id}`
+      );
+
+      alert("Product Deleted Successfully ");
       navigate("/admin/products");
     } catch (error) {
       console.error("Error deleting product:", error);
+      alert("Delete Failed ❌");
+    } finally {
+      setLoading(false);
     }
   };
+
+  // Loading UI while fetching
+  if (fetching) {
+    return (
+      <div className="min-h-screen flex justify-center items-center">
+        <h1 className="text-xl font-semibold">Loading product...</h1>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center p-6">
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-lg">
         
-        {/* Title */}
+        
         <h1 className="text-2xl font-bold mb-6 text-center">
           Edit Product
         </h1>
@@ -86,7 +115,7 @@ function EditProduct() {
         {/* Form */}
         <form onSubmit={handleUpdate} className="flex flex-col gap-4">
 
-          {/* Name */}
+          
           <input
             type="text"
             name="name"
@@ -97,7 +126,7 @@ function EditProduct() {
             required
           />
 
-          {/* Price */}
+          
           <input
             type="number"
             name="price"
@@ -108,7 +137,7 @@ function EditProduct() {
             required
           />
 
-          {/* Image */}
+          
           <input
             type="text"
             name="image"
@@ -119,7 +148,7 @@ function EditProduct() {
             required
           />
 
-          {/* Preview Image */}
+          
           {product.image && (
             <img
               src={product.image}
@@ -128,7 +157,7 @@ function EditProduct() {
             />
           )}
 
-          {/* Description */}
+          
           <textarea
             name="description"
             value={product.description}
@@ -139,22 +168,28 @@ function EditProduct() {
             required
           />
 
-          {/* Buttons */}
+          
           <div className="flex gap-4">
+            
+            {/* Update */}
             <button
               type="submit"
-              className="bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition w-full"
+              disabled={loading}
+              className="bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold w-full"
             >
-              Update Product
+              {loading ? "Updating..." : "Update Product"}
             </button>
 
+            {/* Delete */}
             <button
               type="button"
               onClick={handleDelete}
-              className="bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-semibold transition w-full"
+              disabled={loading}
+              className="bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-semibold w-full"
             >
-              Delete Product
+              {loading ? "Deleting..." : "Delete Product"}
             </button>
+
           </div>
 
         </form>
